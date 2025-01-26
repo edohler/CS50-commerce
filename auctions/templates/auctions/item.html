@@ -1,0 +1,76 @@
+{% extends "auctions/layout.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block body %}
+	<div class="listings-div">
+		<h2>{{ item.name }}</h2>
+		{% if watchlist %}
+			<form action="{% url 'item' item.name %}" method="post">
+				{% csrf_token %}
+				<input id="remove" type="submit" value="Remove from Watchlist" name="removeWatchlist">			
+			</form>
+		{% else %}
+			<form action="{% url 'item' item.name %}" method="post">
+				{% csrf_token %}
+				<input id="add" type="submit" value="Add to Watchlist" name="addWatchlist">			
+			</form>
+		{% endif %}
+		<br>
+	    <div id="solo-pic">
+			<img src="{{ item.picture }}">
+		</div><br>
+		<p>{{ item.text }}</p><br>
+		<div id="solo-text">
+			{% if item.active == False %}
+				{% if win %}
+					<h3><strong>The auction is closed and You won this auction with {{ item.price }}!</strong></h3>
+				{% else %}
+					<h3><strong>The auction is closed!</strong></h3>
+				{% endif %}
+			{% else %}
+				<h3><strong>{{ item.price }}&#8364</strong></h3>
+			{% endif %}
+			{% if user == item.user and item.active == True %}
+				<form action="{% url 'item' item.name %}" method="post">
+		    		{% csrf_token %}
+		    		<input class="btn btn-primary" type="submit" value="Close auction" name="closeSubmit">    	
+		    	</form>
+			{% endif %}
+			<br>
+			{% if user.is_authenticated and item.active == True %}
+				{% if message %}
+					<p>{{ message }}</p>
+				{% else %}
+					<p>Type your bid in here</p>
+				{% endif %}
+				<form action="{% url 'item' item.name %}" method="post">
+		    		{% csrf_token %}
+		    		{{ form_bid|crispy }}
+		    		<input class="btn btn-primary" type="submit" value="Place Bid" name="bidSubmit">    	
+		    	</form>
+		    {% endif %}
+		    <br>
+	    	<p><strong>Details</strong></p>
+			<ul>
+				<li><a href="{% url 'listinggroup' item.categorie %}">{{ item.categorie }}</a></li>
+				<li>created by: {{ item.user }}</li>
+			</ul>
+		</div>
+		<div id="solo-comment">
+			<h3>Comments</h3>
+			<div id="solo-commentField">
+				<ul style="list-style-type:none;">
+					{% for comment in comments %}
+						<li>{{ comment.user }}: {{ comment.text }}</li>
+					{% endfor %}
+				</ul>				
+			</div>
+			<form action="{% url 'item' item.name %}" method="post">
+				{% csrf_token %}
+				{{ form_comment|crispy }}
+				<input class="btn btn-primary" type="submit" value="Submit Comment" name="commentSubmit">
+			</form>
+		</div>
+    </div>
+{% endblock %}

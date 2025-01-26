@@ -1,0 +1,32 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+	
+	{% if side == "Categorie" %}
+		<h2>{{ categorie }}</h2>
+	{% elif side == "Watchlist" %}
+		<h2>Your Watchlist</h2>
+	{% else %}
+		<h2>Active Listings</h2>
+	{% endif %}
+
+    
+    <div class="listings-div">
+	    {% for item in auctions %}
+	    <div class="item-div">
+			<div class="pic-div">
+				<img src="{{ item.picture }}">
+			</div>
+			<div class="text-div">
+				<h3><a href="{% url 'item' item.name %}">{{ item.name }}</a></h3>
+				{% if item.active %}
+					<p><strong>Price: </strong>{{ item.price }}&#8364</p>
+				{% else %}
+					<p><strong>Auction closed!</strong></p>
+				{% endif %}
+				<p>{{ item.text }}</p>
+			</div>
+		</div>
+    	{% endfor %}
+    </div>
+{% endblock %}

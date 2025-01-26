@@ -1,0 +1,13 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+	<h2>Active Listings</h2>
+
+    <div class="listing-div">
+    	<ul>
+    		{% for categorie in categories %}
+    			<li><a class="nav-link" href="{% url 'listinggroup' categorie %}">{{ categorie }}</a></li>
+    		{% endfor %}
+    	</ul>
+    </div>
+{% endblock %}
